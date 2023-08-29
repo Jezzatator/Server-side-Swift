@@ -1,26 +1,29 @@
 import Vapor
 
 func routes(_ app: Application) throws {
-    app.get { req async in
-        "It works!"
-    }
-
-    app.get("hello") { req async -> String in
-        "Hello, world!"
+    
+    // /movies
+    // /movies/id
+    
+    let movies = app.grouped("movies")
+    
+    // /movies
+    movies.get { req async in
+        return "Movies"
     }
     
-    app.get("movies", ":genre") { req async throws -> String in
-        guard let genre = req.parameters.get("genre") else {
+    // /movies/id
+    movies.get(":movieId") { req async throws -> String in
+        guard let movieId = req.parameters.get("movieId") else {
             throw Abort(.badRequest)
         }
-        return "All movies about the genre: \(genre)"
+        return "Movie \(movieId)"
     }
     
-    app.get("movies", ":genre", ":year") { req async throws -> String in
-        guard let genre = req.parameters.get("genre"),
-              let year = req.parameters.get("year") else {
-            throw Abort(.badRequest)
-        }
-        return "All movies about the genre: \(genre) for year \(year)"
+    let users = app.grouped("users")
+    
+    users.get("prenium") { req async throws -> String in
+        return "Prenium"
     }
+    
 }
